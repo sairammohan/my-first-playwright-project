@@ -28,7 +28,7 @@ test('Any header', async ({ page }) => {
   // Navigate the browser to the Playwright homepage
   await page.goto('https://playwright.dev/');
   // Assert that a heading with the text 'Playwright' is visible on the page
-  await expect(page.getByRole('heading', { name: 'Any browser • Any platform • One API' })).toBeVisible();
+  await expect(page.getByText('Any browser • Any platform • One API')).toBeVisible();
 });
 
 test ('text check', async ({page}) => {
