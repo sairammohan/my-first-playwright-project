@@ -1,5 +1,20 @@
 import { defineConfig, devices } from '@playwright/test';
 
+//Determine which site to test based on environment variable
+
+const getBaseURL = ()=>{
+  const site = process.env.TEST_SITE || 'saucedemo';
+  const urls = {
+    saucedemo: 'https:// saucedemo.com',
+    todomvc: 'https://demo.playwright.dev/todomvc',
+    automationexercise: 'https://automationexercise.com',
+    theinternet:'https://the-Internet.herokkuapp.com'
+
+  };
+  return urls[site as keyof typeof urls] || urls.saucedemo;
+};
+  
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -22,14 +37,33 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['list'],
+    ['json', { outputFile: 'test-results.json' }]
+  ],
+  //Global expect timeout
+  expect: { timeout:5000 //5 seconds}
+  },
+    
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
-
+    baseURL: getBaseURL(),
+    // baseURL: process.env.BASE_URL || 'https://www.saucedemo.com',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    // Take screenshot on failure
+    screenshot: 'only-on-failure',
+    //Record video on failure
+    video: 'retain-on-failure',
+    //Browser viewport
+    viewport: { width: 1280, height: 720},
+    //Action timeout
+    actionTimeout: 10*1000, //10 seconds
+    //Navigation Timeout
+    navigationTimeout: 30 *1000, // 30 seconds
   },
 
   /* Configure projects for major browsers */
@@ -50,14 +84,14 @@ export default defineConfig({
     },
 
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+     {
+      name: 'Mobile Chrome',
+       use: { ...devices['Pixel 5'] },
+     },
+     {
+       name: 'Mobile Safari',
+       use: { ...devices['iPhone 12'] },
+     },
 
     /* Test against branded browsers. */
     // {
