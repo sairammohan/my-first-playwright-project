@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { Channel, channel } from 'node:diagnostics_channel';
 
 //Determine which site to test based on environment variable
 
@@ -73,6 +74,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
+    { name: 'edge', 
+      use: {...devices['Desktop Chrome'],
+        channel:'msedge'
+      }
+    },
+
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -83,7 +90,7 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
-    /* Test against mobile viewports. */
+    /* Test against mobile viewports. 
      {
       name: 'Mobile Chrome',
        use: { ...devices['Pixel 5'] },
@@ -92,7 +99,7 @@ export default defineConfig({
        name: 'Mobile Safari',
        use: { ...devices['iPhone 12'] },
      },
-
+  */
     /* Test against branded browsers. */
     // {
     //   name: 'Microsoft Edge',
